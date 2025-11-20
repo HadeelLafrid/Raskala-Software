@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@theme {
+  --color-primary: #3b82f6;
+  --color-secondary: #8b5cf6;
+  --color-danger: #ef4444;
+  --color-success: #10b981;
+  
+  /* You can also define with opacity support */
+  --color-brand-blue: oklch(0.6 0.2 250);
+}
