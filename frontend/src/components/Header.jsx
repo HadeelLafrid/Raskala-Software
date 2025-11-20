@@ -13,7 +13,7 @@ export default function Header() {
   // Return the JSX structure for the header
   return (
     // Main header element with background and shadow styling
-    <header className="bg-white shadow-md">
+    <header id="home"  className="bg-white shadow-md">
       {/* Container to center content with padding */}
       <div className="container mx-auto px-4 py-4">
         {/* Main row containing all elements */}
@@ -34,16 +34,16 @@ export default function Header() {
               {/* Navigation list horizontally spaced */}
               <ul className="flex gap-6">
                 {/* Home navigation link */}
-                <li><a href="/" className="text-gray-700 hover:text-blue-600 font-medium">Home</a></li>
-                {/* About navigation link */}
-                <li><a href="/about" className="text-gray-700 hover:text-blue-600 font-medium">About</a></li>
-                {/* Contact navigation link */}
-                <li><a href="/contact" className="text-gray-700 hover:text-blue-600 font-medium">Contact</a></li>
+                <li><a href="#home" className="text-gray-700 hover:text-lime-600 font-medium">Home</a></li>
+                {/* Popular Items navigation link */}
+                <li><a href="#popular-items" className="text-gray-700 hover:text-lime-600 font-medium">Popular Items</a></li>
+                {/* Footer navigation link */}
+                <li><a href="#footer" className="text-gray-700 hover:text-lime-600 font-medium">Contact</a></li>
               </ul>
             </nav>
 
             {/* Hamburger menu button - visible only on mobile */}
-            <button 
+            <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="md:hidden text-gray-700 focus:outline-none"
               aria-label="Toggle menu"
@@ -70,7 +70,7 @@ export default function Header() {
           {/* Right side: Get Started button */}
           <div className="w-full md:w-auto flex justify-center md:justify-end">
             {/* Call-to-action button with gradient and hover transition - visible on all screen sizes */}
-            <button className="flex-shrink-0 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 md:px-6 py-2 rounded-full font-semibold hover:from-purple-600 hover:to-pink-600 transition text-sm md:text-base">
+            <button className="flex-shrink-0 bg-gradient-to-r from-lime-400 to-green-500 text-white px-4 md:px-6 py-2 rounded-full font-semibold hover:from-lime-500 hover:to-green-600 transition text-sm md:text-base">
               {/* Button label */}
               Get Started
             </button>
@@ -83,11 +83,11 @@ export default function Header() {
             {/* Navigation list - vertical on mobile */}
             <ul className="flex flex-col gap-3 items-center">
               {/* Home navigation link */}
-              <li><a href="/" className="text-gray-700 hover:text-blue-600 font-medium">Home</a></li>
-              {/* About navigation link */}
-              <li><a href="/about" className="text-gray-700 hover:text-blue-600 font-medium">About</a></li>
-              {/* Contact navigation link */}
-              <li><a href="/contact" className="text-gray-700 hover:text-blue-600 font-medium">Contact</a></li>
+              <li><a href="#home" className="text-gray-700 hover:text-lime-600 font-medium" onClick={() => setIsMenuOpen(false)}>Home</a></li>
+              {/* Popular Items navigation link */}
+              <li><a href="#popular-items" className="text-gray-700 hover:text-lime-600 font-medium" onClick={() => setIsMenuOpen(false)}>Popular Items</a></li>
+              {/* Footer navigation link */}
+              <li><a href="#footer" className="text-gray-700 hover:text-lime-600 font-medium" onClick={() => setIsMenuOpen(false)}>Contact</a></li>
             </ul>
           </nav>
         )}

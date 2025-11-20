@@ -2,7 +2,7 @@ import footerImage from '../assets/images/raskala_picture.svg';
 
 export default function Footer() {
   return (
-    <footer className="bg-lime-300 text-gray-800 p-12 mt-auto">
+    <footer id='footer' className="bg-lime-300 text-gray-800 p-12 mt-auto">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           

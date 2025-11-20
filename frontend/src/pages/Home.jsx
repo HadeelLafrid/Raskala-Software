@@ -1,8 +1,17 @@
+import Hero from '../components/Hero';
+import Categories from '../components/Categories';
+import PopularItems from '../components/PopularItems';
+import Publicity from '../components/Publicity';
+// import ContactSection from '../components/ContactSection';
+
 export default function Home() {
-    return (
-      <main className="flex-grow container mx-auto p-8">
-        <h2 className="text-3xl font-bold mb-4">Welcome to Raskala</h2>
-        <p className="text-gray-700">This is the home page content.</p>
-      </main>
-    );
-  }
+  return (
+    <main className="flex-grow">
+      <Hero />
+      <Categories />
+      <Publicity />
+      <PopularItems />
+      {/* <ContactSection /> */}
+    </main>
+  ); 
+}
