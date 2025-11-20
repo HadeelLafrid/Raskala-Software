@@ -59,7 +59,6 @@ vite.config.js
 
 
 ### Option 2: Using Bullet Points
-```markdown
 **Project Structure:**
 - **Raskala/**
   - **frontend/** - React + Vite + Tailwind
