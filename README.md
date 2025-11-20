@@ -58,50 +58,39 @@ vite.config.js
 
 
 
-Project Structure:
-Raskala/
-│
-├── frontend/     # React + Vite + Tailwind
-│   ├── public/
-│   │   └── logo.svg
-│   │
-│   ├── src/
-│   │   ├── components/          # Reusable components
-│   │   │   ├── Header.jsx
-│   │   │   ├── Footer.jsx
-│   │   │   └── Button.jsx
-│   │   │
-│   │   ├── pages/               # Page components
-│   │   │   ├── Home.jsx
-│   │   │   ├── About.jsx
-│   │   │   └── Contact.jsx
-│   │   │
-│   │   ├── services/            # API calls (AJAX)
-│   │   │   └── api.js
-│   │   │
-│   │   ├── App.jsx              # Main app component
-│   │   ├── main.jsx             # Entry point
-│   │   └── index.css            # Tailwind imports
-│   │
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.js
-│
-├── backend/                     # PHP Backend
-│   ├── api/                     # API endpoints
-│   │   ├── users.php
-│   │   ├── posts.php
-│   │   └── auth.php
-│   │
-│   ├── config/                  # Configuration
-│   │   └── database.php
-│   │
-│   ├── includes/                # Reusable PHP code
-│   │   ├── db.php
-│   │   └── functions.php
-│   │
-│   └── index.php                # Optional: main entry point
-│
-└── README.md
-
-
+### Option 2: Using Bullet Points
+```markdown
+**Project Structure:**
+- **Raskala/**
+  - **frontend/** - React + Vite + Tailwind
+    - **public/**
+      - logo.svg
+    - **src/**
+      - **components/** - Reusable components
+        - Header.jsx
+        - Footer.jsx
+        - Button.jsx
+      - **pages/** - Page components
+        - Home.jsx
+        - About.jsx
+        - Contact.jsx
+      - **services/** - API calls (AJAX)
+        - api.js
+      - App.jsx - Main app component
+      - main.jsx - Entry point
+      - index.css - Tailwind imports
+    - index.html
+    - package.json
+    - vite.config.js
+  - **backend/** - PHP Backend
+    - **api/** - API endpoints
+      - users.php
+      - posts.php
+      - auth.php
+    - **config/** - Configuration
+      - database.php
+    - **includes/** - Reusable PHP code
+      - db.php
+      - functions.php
+    - index.php - Optional: main entry point
+  - README.md
