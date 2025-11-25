@@ -35,7 +35,7 @@ export default function Categories() {
             {categories.map((category, index) => (
               <div
                 key={index}
-                className="bg-gradient-to-r from-lime-300 to-lime-400 rounded-2xl p-6 flex items-center justify-between hover:shadow-lg transition-all duration-300 cursor-pointer group hover:scale-105"
+                className="bg-gradient-to-r from-yellow-300 to-yellow-400 rounded-2xl p-6 flex items-center justify-between hover:shadow-lg transition-all duration-300 cursor-pointer group hover:scale-105"
               >
                 <div className="flex items-center gap-4">
                   <div className="bg-white rounded-xl p-3 text-4xl">
