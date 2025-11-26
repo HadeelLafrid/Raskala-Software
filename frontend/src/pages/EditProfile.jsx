@@ -1,7 +1,7 @@
 import HeaderLoggedIn from '../components/HeaderLoggedIn';
 import Footer from '../components/Footer';
 import ProfileHero from '../components/ProfileHero';
-import WishListItems from '../components/WishListItems';
+import EditProfile from '../components/EditProfile';
 export default function Profile() {
   // Simulate user data - in real app, fetch from API/database
   const user = {
@@ -18,7 +18,7 @@ export default function Profile() {
       <HeaderLoggedIn user={user} />
       <main className="flex-grow">
         <ProfileHero user={user} isOwnProfile={true} />
-        <WishListItems/>
+        <EditProfile/>
       </main>
       <Footer />
     </div>
