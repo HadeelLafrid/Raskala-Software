@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function Categories() {
     const categories = [
       { name: 'Clothes', pubs: 129, image: '👕' },
@@ -18,15 +20,15 @@ export default function Categories() {
               <span className="inline-block bg-pink-200 text-pink-600 px-4 py-2 rounded-full text-sm font-semibold">
                 Top Search Categories
               </span>
-              <a 
-                href="/categories" 
+              <Link
+                to="/browse-categories" 
                 className="text-gray-600 hover:text-pink-400 flex items-center gap-2 font-medium"
               >
                 Browse All Categories
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
   
@@ -35,7 +37,7 @@ export default function Categories() {
             {categories.map((category, index) => (
               <div
                 key={index}
-                className="bg-gradient-to-r from-lime-300 to-lime-400 rounded-2xl p-6 flex items-center justify-between hover:shadow-lg transition-all duration-300 cursor-pointer group hover:scale-105"
+                className="bg-gradient-to-r from-yellow-300 to-yellow-400 rounded-2xl p-6 flex items-center justify-between hover:shadow-lg transition-all duration-300 cursor-pointer group hover:scale-105"
               >
                 <div className="flex items-center gap-4">
                   <div className="bg-white rounded-xl p-3 text-4xl">

@@ -13,24 +13,31 @@ export default function Header() {
   // Return the JSX structure for the header
   return (
     // Main header element with background and shadow styling
-    <header id="home"  className="bg-white shadow-md">
+    <header id="home" className="bg-white shadow-md">
       {/* Container to center content with padding */}
       <div className="container mx-auto px-4 py-4">
         {/* Main row containing all elements */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
-          {/* Left section: Logo and navigation */}
-          <div className="flex items-center justify-between w-full md:w-auto gap-4 md:gap-8">
-            {/* Logo wrapper prevents shrinking */}
-            <div className="flex-shrink-0">
-              {/* Link wrapping the logo to navigate to home */}
-              <a href="/">
-                {/* Logo image with fixed height */}
-                <img src={logo} alt="Raskala Logo" className="h-10 md:h-12 w-auto" />
-              </a>
-            </div>
+        <div className="flex items-center justify-between gap-4">
+          
+          {/* Left section: Logo */}
+          <div className="flex-shrink-0">
+            {/* Link wrapping the logo to navigate to home */}
+            <a href="/">
+              {/* Logo image with fixed height */}
+              <img src={logo} alt="Raskala Logo" className="h-10 md:h-12 w-auto" />
+            </a>
+          </div>
 
-            {/* Desktop navigation - hidden on mobile */}
-            <nav className="hidden md:block">
+          {/* Middle: Search bar - hidden on small screens, shown on medium+ */}
+          <div className="hidden md:flex flex-grow max-w-3xl">
+            <SearchBar />
+          </div>
+
+          {/* Right section: Navigation + Get Started button + Hamburger */}
+          <div className="flex items-center gap-4">
+            
+            {/* Desktop navigation - hidden below lg screens */}
+            <nav className="hidden lg:block">
               {/* Navigation list horizontally spaced */}
               <ul className="flex gap-6">
                 {/* Home navigation link */}
@@ -42,10 +49,15 @@ export default function Header() {
               </ul>
             </nav>
 
-            {/* Hamburger menu button - visible only on mobile */}
+            {/* Get Started button - always visible, same size */}
+            <button className="flex-shrink-0 bg-gradient-to-r from-pink-400 to-pink-500 text-white px-4 md:px-6 py-2 rounded-full font-semibold hover:from-pink-500 hover:to-pink-600 transition text-sm md:text-base whitespace-nowrap">
+              Get Started
+            </button>
+
+            {/* Hamburger menu button - visible below lg screens */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden text-gray-700 focus:outline-none"
+              className="lg:hidden text-gray-700 focus:outline-none"
               aria-label="Toggle menu"
             >
               {/* Hamburger icon */}
@@ -60,34 +72,45 @@ export default function Header() {
               </svg>
             </button>
           </div>
+        </div>
 
-          {/* Middle area grows to fill space and constrains max width */}
-          <div className="w-full md:flex-grow md:max-w-3xl">
-            {/* Search bar component */}
-            <SearchBar />
-          </div>
-
-          {/* Right side: Get Started button */}
-          <div className="w-full md:w-auto flex justify-center md:justify-end">
-            {/* Call-to-action button with gradient and hover transition - visible on all screen sizes */}
-            <button className="flex-shrink-0 bg-gradient-to-r from-lime-400 to-green-500 text-white px-4 md:px-6 py-2 rounded-full font-semibold hover:from-lime-500 hover:to-green-600 transition text-sm md:text-base">
-              {/* Button label */}
-              Get Started
-            </button>
-          </div>
+        {/* Mobile search bar - shown only on small screens */}
+        <div className="md:hidden mt-4">
+          <SearchBar />
         </div>
 
         {/* Mobile navigation menu - hidden on desktop, toggleable on mobile */}
         {isMenuOpen && (
-          <nav className="md:hidden border-t mt-4 pt-3">
+          <nav className="lg:hidden border-t mt-4 pt-4">
             {/* Navigation list - vertical on mobile */}
-            <ul className="flex flex-col gap-3 items-center">
+            <ul className="flex flex-col gap-3">
               {/* Home navigation link */}
-              <li><a href="#home" className="text-gray-700 hover:text-lime-600 font-medium" onClick={() => setIsMenuOpen(false)}>Home</a></li>
+              <li>
+                <a href="#home" className="text-gray-700 hover:text-lime-600 font-medium flex items-center justify-between py-2" onClick={() => setIsMenuOpen(false)}>
+                  Home
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </li>
               {/* Popular Items navigation link */}
-              <li><a href="#popular-items" className="text-gray-700 hover:text-lime-600 font-medium" onClick={() => setIsMenuOpen(false)}>Popular Items</a></li>
+              <li>
+                <a href="#popular-items" className="text-gray-700 hover:text-lime-600 font-medium flex items-center justify-between py-2" onClick={() => setIsMenuOpen(false)}>
+                  Popular Items
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </li>
               {/* Footer navigation link */}
-              <li><a href="#footer" className="text-gray-700 hover:text-lime-600 font-medium" onClick={() => setIsMenuOpen(false)}>Contact</a></li>
+              <li>
+                <a href="#footer" className="text-gray-700 hover:text-lime-600 font-medium flex items-center justify-between py-2" onClick={() => setIsMenuOpen(false)}>
+                  Contact
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </li>
             </ul>
           </nav>
         )}
