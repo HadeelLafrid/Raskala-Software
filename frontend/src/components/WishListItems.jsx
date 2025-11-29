@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import WishItem from './WishItem';
 import itemImage from '../assets/images/item.png';
+import COLORS from '../constants/colors';
 
 export default function WishListItems() {
-  // Array of wishlist items data
   const items = [
     {
       id: 1,
@@ -50,45 +50,51 @@ export default function WishListItems() {
       image: itemImage
     }
   ];
-
-  // State to track favorited items by id - all items favorited by default
+  const [wishlistItems, setWishlistItems] = useState(items);
   const [favorites, setFavorites] = useState({
     1: true,
     2: true,
     3: true,
     4: true
   });
-
-  // Toggle favorite status for specific item
   const toggleFavorite = (id) => {
     setFavorites(prev => ({
-      ...prev,           // Spread existing favorites
-      [id]: !prev[id]    // Toggle the specific item's favorite status
+      ...prev,         
+      [id]: !prev[id]    
     }));
   };
 
-  // Handler for removing item from wishlist
   const handleRemoveItem = (id) => {
-    // Add remove logic here (e.g., filter items array or call API)
-    console.log('Remove item:', id);
+    setWishlistItems(prev => prev.filter(item => item.id !== id));
+    setFavorites(prev => {
+      const newFavorites = { ...prev };
+      delete newFavorites[id];
+      return newFavorites;
+    });
+    
+    console.log('Removed item:', id);
   };
 
   return (
-    <section id='wishlist-items' className="py-16 bg-gray-50">
+    <section id='wishlist-items' className="py-16" style={{ backgroundColor: COLORS.background.white}}>
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-gray-900 mb-8">My Wishlist</h2>
-        
-        {/* Responsive grid layout */}
+        <h2 className="text-3xl font-bold mb-8" style={{ color: COLORS.text.primary }}>My Wishlist</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {items.map((item) => (
-            <WishItem
-              key={item.id}
-              item={item}
-              isFavorite={favorites[item.id]}
-              onToggleFavorite={toggleFavorite}
-              onRemove={handleRemoveItem}
-            />
-          ))}
+          {wishlistItems.length > 0 ? (
+            wishlistItems.map((item) => (
+              <WishItem
+                key={item.id}
+                item={item}
+                isFavorite={favorites[item.id]}
+                onToggleFavorite={toggleFavorite}
+                onRemove={handleRemoveItem}
+              />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <p style={{ color: COLORS.text.secondary }}>Your wishlist is empty</p>
+            </div>
+          )}
         </div>
       </div>
     </section>
