@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { FullWidthButton, LinkButton } from '../components/Button';
 import welcomeImage from '../assets/images/welcome.png';
+import { Link } from "react-router-dom";
+
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
     userName: '',
@@ -294,11 +296,13 @@ export default function SignUpPage() {
                 <p className="mt-1 text-sm text-red-600">{errors.phoneNumber}</p>
               )}
             </div>
+            <Link to='/home-after-login'>
             <div className="pt-3">
               <FullWidthButton onClick={handleSubmit}>
                 Sign up
               </FullWidthButton>
             </div>
+            </Link>
           </div>
           <div className="mt-6 text-center">
             <p className="text-gray-600">

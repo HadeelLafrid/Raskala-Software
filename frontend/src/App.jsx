@@ -6,6 +6,9 @@ import Profile from './pages/Profile';
 import WishList from './pages/WishList'
 import EditProfile from './pages/EditProfile';
 import BrowseCategories from './pages/BrowseCategories';
+import Login from './pages/LoginPage';
+import Signup from './pages/SignUpPage';
+
 
 export default function App() {
   return (
@@ -19,6 +22,8 @@ export default function App() {
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/wishList" element={<WishList />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/browse-categories" element={<BrowseCategories />} />
       </Routes>
     </BrowserRouter>

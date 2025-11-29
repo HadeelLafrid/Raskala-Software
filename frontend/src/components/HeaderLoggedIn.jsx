@@ -36,7 +36,7 @@ export default function HeaderLoggedIn({ user }) {
               <ul className="flex gap-6 items-center">
                 {/* Home with dropdown */}
                 <li className="relative group">
-                  <a href="#home" className="text-gray-700 hover:text-lime-600 font-medium flex items-center gap-1">
+                  <a href="/home-after-login" className="text-gray-700 hover:text-lime-600 font-medium flex items-center gap-1">
                     Home
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -56,8 +56,8 @@ export default function HeaderLoggedIn({ user }) {
 
                 {/* Pages with dropdown */}
                 <li className="relative group">
-                  <a href="#pages" className="text-gray-700 hover:text-lime-600 font-medium flex items-center gap-1">
-                    Pages
+                  <a href="/browse-categories" className="text-gray-700 hover:text-lime-600 font-medium flex items-center gap-1">
+                    All Categories
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
@@ -76,7 +76,7 @@ export default function HeaderLoggedIn({ user }) {
 
                 {/* Log Out link */}
                 <li>
-                  <a href="#logout" className="text-orange-500 hover:text-orange-600 font-medium flex items-center gap-1">
+                  <a href="/add-item" className="text-orange-500 hover:text-orange-600 font-medium flex items-center gap-1">
                     Log Out
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -109,13 +109,13 @@ export default function HeaderLoggedIn({ user }) {
                   <a href="#settings" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={() => setIsDropdownOpen(false)}>
                     Settings
                   </a>
-                  <a href="#my-items" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={() => setIsDropdownOpen(false)}>
+                  {/* <a href="#my-items" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={() => setIsDropdownOpen(false)}>
                     My Items
-                  </a>
-                  <hr className="my-2" />
-                  <a href="#logout" className="block px-4 py-2 text-red-600 hover:bg-gray-100" onClick={() => setIsDropdownOpen(false)}>
+                  </a> */}
+                  {/* <hr className="my-2" /> */}
+                  {/* <a href="#logout" className="block px-4 py-2 text-red-600 hover:bg-gray-100" onClick={() => setIsDropdownOpen(false)}>
                     Log Out
-                  </a>
+                  </a> */}
                 </div>
               )}
             </div>
