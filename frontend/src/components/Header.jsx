@@ -5,6 +5,7 @@ import logo from '../assets/images/raskala_logo.png';
 // Import useState hook for managing mobile menu state
 import { useState } from 'react';
 
+
 // Export the Header functional component as default
 export default function Header() {
   // State to track if mobile menu is open
