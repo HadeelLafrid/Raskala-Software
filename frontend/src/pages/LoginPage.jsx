@@ -12,6 +12,8 @@ export default function LoginPage() {
     email: '',   
     password: '' 
   });
+  const DEMO_EMAIL = 'demo@raskala.com';
+  const DEMO_PASSWORD = 'demo123';
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -55,15 +57,32 @@ export default function LoginPage() {
   const handleSubmit = () => {
     const emailError = validateEmail(email);
     const passwordError = validatePassword(password);
+    
     setErrors({
       email: emailError,
       password: passwordError
     });
+
     if (emailError || passwordError) {
       console.log('Form has errors');
       return;
     }
-    console.log('Login submitted:', { email, password, rememberMe, keepLoggedIn });
+    if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
+      console.log('Login successful!');
+      window.location.href = '/home-after-login';
+    } else {
+      setErrors({
+        email: 'Invalid email or password',
+        password: 'Invalid email or password'
+      });
+      console.log('Invalid credentials');
+    }
+  };
+
+  const handleDemoLogin = () => {
+    setEmail(DEMO_EMAIL);
+    setPassword(DEMO_PASSWORD);
+    setErrors({ email: '', password: '' });
   };
 
   const handleGoogleLogin = () => {
@@ -91,6 +110,22 @@ export default function LoginPage() {
               Enter your Credentials to access your account
             </p>
           </div>
+          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p className="text-sm text-gray-700 mb-2">
+              <strong>Demo Account:</strong>
+            </p>
+            <p className="text-xs text-gray-600 mb-3">
+              Email: <code className="bg-white px-2 py-1 rounded">demo@raskala.com</code><br />
+              Password: <code className="bg-white px-2 py-1 rounded">demo123</code>
+            </p>
+            <button
+              onClick={handleDemoLogin}
+              className="text-sm text-lime-600 hover:text-lime-700 font-semibold underline"
+            >
+              Click here to auto-fill demo credentials
+            </button>
+          </div>
+
           <div className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-base font-semibold text-gray-700 mb-2">
@@ -196,7 +231,7 @@ export default function LoginPage() {
           <div className="mt-8 text-center">
             <p className="text-gray-600">
               Don't have an account?{' '}
-              <LinkButton href="/signup" className="text-lime-500 hover:text-lime-600">
+              <LinkButton href="/SignUpPage" className="text-lime-500 hover:text-lime-600">
                 Sign Up
               </LinkButton>
             </p>
