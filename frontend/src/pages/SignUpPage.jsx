@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FullWidthButton, LinkButton } from '../components/Button';
 import welcomeImage from '../assets/images/welcome.png';
+import LoginPage from './LoginPage';
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
     userName: '',
@@ -303,7 +304,7 @@ export default function SignUpPage() {
           <div className="mt-6 text-center">
             <p className="text-gray-600">
               Already have an account?{' '}
-              <LinkButton href="/login">Sign In</LinkButton>
+              <LinkButton href="/LoginPage">Sign In</LinkButton>
             </p>
           </div>
         </div>
