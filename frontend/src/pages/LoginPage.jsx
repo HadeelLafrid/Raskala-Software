@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FullWidthButton, LinkButton } from '../components/Button';
 import welcomeImage from '../assets/images/welcome.png';
-import SignUpPage from './SignUpPage';
+import { Link } from "react-router-dom";
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -195,12 +195,12 @@ export default function LoginPage() {
                 <span className="ml-2 text-gray-700 font-semibold">Keep me login</span>
               </label>
             </div>
-
+              <Link to='/home-after-login'>
             <div className="pt-3">
               <FullWidthButton onClick={handleSubmit}>
                 Log in
               </FullWidthButton>
-            </div>
+            </div></Link>
 
             <div className="flex gap-4 pt-4">
               <button

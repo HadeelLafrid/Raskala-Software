@@ -5,11 +5,9 @@ import PostItem from '../components/PostItem';
 import { Plus, Phone } from 'lucide-react';
 import bakery from '/src/assets/images/bakery.jpg';
 import WishListItems from '../components/WishListItems';
-import Messages from '../pages/messages';
 import { useState, useEffect } from 'react';
 import petrin from '/src/assets/images/petrin.jpg';
 import COLORS from '../constants/colors';
-
 export default function Profile() {
   const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);
