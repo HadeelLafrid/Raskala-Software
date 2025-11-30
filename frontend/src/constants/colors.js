@@ -9,7 +9,8 @@ export const COLORS = {
       yellow: '#FFEA00',    // Main yellow for buttons, highlights
       pink: '#FF66CC',      // Primary CTA, accents
       lime: '#BBFF00',      // Secondary accent
-      orange: '#FF7700',    // Tertiary accent
+      orange: '#FF7700', // Tertiary accent
+        blue: '#00D4FF',  
     },
   
     // Neutral Colors
