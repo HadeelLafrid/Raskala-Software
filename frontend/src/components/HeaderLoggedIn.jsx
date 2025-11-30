@@ -2,6 +2,7 @@ import SearchBar from './SearchBar';
 import logo from '../assets/images/raskala_logo.png';
 import defaultProfile from '../assets/images/profile.png';
 import { useState } from 'react';
+import { Link } from "react-router-dom";
 
 export default function HeaderLoggedIn({ user }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -76,7 +77,7 @@ export default function HeaderLoggedIn({ user }) {
 
                 {/* Log Out link */}
                 <li>
-                  <a href="/add-item" className="text-orange-500 hover:text-orange-600 font-medium flex items-center gap-1">
+                  <a href="/" className="text-orange-500 hover:text-orange-600 font-medium flex items-center gap-1">
                     Log Out
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -88,6 +89,7 @@ export default function HeaderLoggedIn({ user }) {
 
             {/* Profile picture - always visible, same size */}
             <div className="relative">
+              {/* <Link to = '/Profile'>               */}
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="flex items-center gap-2 focus:outline-none"
@@ -99,14 +101,15 @@ export default function HeaderLoggedIn({ user }) {
                   className="w-12 h-12 rounded-full border-2 border-pink-400 object-cover hover:border-pink-500 transition-colors"
                 />
               </button>
-
+              {/* </Link> */}
               {/* Profile dropdown menu - only on desktop */}
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                  <a href="#profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={() => setIsDropdownOpen(false)}>
+                  <Link  
+                  to="/edit-profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={() => setIsDropdownOpen(false)}>
                     My Profile
-                  </a>
-                  <a href="#settings" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={() => setIsDropdownOpen(false)}>
+                  </Link>
+                  <a href="/Profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={() => setIsDropdownOpen(false)}>
                     Settings
                   </a>
                   {/* <a href="#my-items" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={() => setIsDropdownOpen(false)}>
@@ -206,7 +209,7 @@ export default function HeaderLoggedIn({ user }) {
               </li>
               
               <li className="border-t pt-3 mt-2">
-                <a href="#logout" className="text-orange-500 hover:text-orange-600 font-medium flex items-center justify-between py-2" onClick={() => setIsMenuOpen(false)}>
+                <a href="/home-after-login" className="text-orange-500 hover:text-orange-600 font-medium flex items-center justify-between py-2" onClick={() => setIsMenuOpen(false)}>
                   Log Out
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

@@ -8,6 +8,7 @@ import WishListItems from '../components/WishListItems';
 import { useState, useEffect } from 'react';
 import petrin from '/src/assets/images/petrin.jpg';
 import COLORS from '../constants/colors';
+
 export default function Profile() {
   const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);
