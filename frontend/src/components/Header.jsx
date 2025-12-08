@@ -53,9 +53,9 @@ export default function Header() {
 
             {/* Get Started button - always visible, same size */}
             <Link to='/LoginPage'>
-            <button className="flex-shrink-0 bg-gradient-to-r from-pink-400 to-pink-500 text-white px-4 md:px-6 py-2 rounded-full font-semibold hover:from-pink-500 hover:to-pink-600 transition text-sm md:text-base whitespace-nowrap">
-              Get Started
-            </button>
+              <button className="flex-shrink-0 bg-gradient-to-r from-pink-400 to-pink-500 text-white px-4 md:px-6 py-2 rounded-full font-semibold hover:from-pink-500 hover:to-pink-600 transition text-sm md:text-base whitespace-nowrap">
+                Get Started
+              </button>
             </Link>
 
             {/* Hamburger menu button - visible below lg screens */}
