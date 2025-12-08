@@ -1,6 +1,20 @@
 # Raskala
 This is a marketplace website that adopts a new approachs of selling, buying and admin supervision, it is a Software project
 
+How to run the project:
+check those:
+  node -v
+  npm -v
+  git --version
+if you dont have one of them install from official websites ...
+Clone the Project
+inside the project run this:
+npm install
+it installs automatically: React / Tailwind CSS / Vite / All required libraries
+Run the Project: npm run dev
+npm install react-icons
+
+
 1. What Each File Does:
 Core Files:
 main.jsx → Entry point, renders React app into HTML
