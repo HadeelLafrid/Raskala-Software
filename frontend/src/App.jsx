@@ -10,6 +10,7 @@ import EditProfile from './pages/EditProfile';
 import BrowseCategories from './pages/BrowseCategories';
 import Messages from './pages/messages';
 import AdminTemplate from './pages/admin/adminTemplate';
+import AdminUsers from './pages/admin/adminUsers';
 export default function App() {
   return (
     <BrowserRouter>
@@ -26,6 +27,8 @@ export default function App() {
         <Route path="/SignUpPage" element={<SignUpPage />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/browse-categories" element={<BrowseCategories />} />
+        <Route path="/dashboard" element={<AdminUsers />} />
+
         {/* <Route path="/adminTemplate" element={<AdminTemplate />} /> */}
       </Routes>
     </BrowserRouter>
