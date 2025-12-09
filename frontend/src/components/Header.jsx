@@ -48,6 +48,7 @@ export default function Header() {
                 <li><a href="#popular-items" className="text-gray-700 hover:text-lime-600 font-medium">Popular Items</a></li>
                 {/* Footer navigation link */}
                 <li><a href="#footer" className="text-gray-700 hover:text-lime-600 font-medium">Contact</a></li>
+                <li><Link to="/dashboard" className="text-gray-700 hover:text-lime-600 font-medium">Admin Demo</Link></li>
               </ul>
             </nav>
 
