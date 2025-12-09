@@ -9,7 +9,6 @@ import WishList from './pages/WishList'
 import EditProfile from './pages/EditProfile';
 import BrowseCategories from './pages/BrowseCategories';
 import Messages from './pages/messages';
-import AdminTemplate from './pages/admin/adminTemplate';
 import AdminUsers from './pages/admin/adminUsers';
 import AdminReviews from './pages/admin/AdminPublicationReviews';
 import AdminSettings from './pages/admin/AdminSettings';
@@ -19,9 +18,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* <Route path="/" element={<Home />} /> */}
-        {/* <Route path="/" element={<WishList />} /> */}
-        <Route path="/" element={<AdminTemplate/>} />
+        <Route path="/" element={<Home />} />
         <Route path="/home-after-login" element={<HomeAfterLogIn />} />
         <Route path="/add-item" element={<AddItem />} />
         <Route path="/edit-profile" element={<EditProfile />} />
@@ -31,14 +28,11 @@ export default function App() {
         <Route path="/SignUpPage" element={<SignUpPage />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/browse-categories" element={<BrowseCategories />} />
-        <Route path="/dashboard" element={<AdminUsers />} />
 
+        <Route path="/dashboard" element={<AdminUsers />} />
         <Route path="/AdminReviews" element={<AdminReviews />} />
         <Route path="/AdminSettings" element={<AdminSettings />} />
 
-        
-
-        {/* <Route path="/adminTemplate" element={<AdminTemplate />} /> */}
       </Routes>
     </BrowserRouter>
 
