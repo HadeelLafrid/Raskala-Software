@@ -11,6 +11,10 @@ import BrowseCategories from './pages/BrowseCategories';
 import Messages from './pages/messages';
 import AdminTemplate from './pages/admin/adminTemplate';
 import AdminUsers from './pages/admin/adminUsers';
+import AdminReviews from './pages/admin/AdminPublicationReviews';
+import AdminSettings from './pages/admin/AdminSettings';
+
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -28,6 +32,11 @@ export default function App() {
         <Route path="/messages" element={<Messages />} />
         <Route path="/browse-categories" element={<BrowseCategories />} />
         <Route path="/dashboard" element={<AdminUsers />} />
+
+        <Route path="/AdminReviews" element={<AdminReviews />} />
+        <Route path="/AdminSettings" element={<AdminSettings />} />
+
+        
 
         {/* <Route path="/adminTemplate" element={<AdminTemplate />} /> */}
       </Routes>
