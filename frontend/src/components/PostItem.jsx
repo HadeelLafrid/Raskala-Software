@@ -1,10 +1,17 @@
 import hero from '../assets/images/hero.png';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Heart } from 'lucide-react';
 import COLORS from '../constants/colors';
+import { likeProduct, deleteProduct } from '../services/api';
+import useFavorites from '../hooks/useFavorites';
+
 export default function PostItem({ post, isOwnProfile = false, onPostUpdate, onPostDelete }) {
+  const navigate = useNavigate();
   const [currentPost, setCurrentPost] = useState(post);
   const [isLiking, setIsLiking] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { isFavorite, toggleFavorite } = useFavorites();
   const {
     id,
     image,
@@ -15,50 +22,55 @@ export default function PostItem({ post, isOwnProfile = false, onPostUpdate, onP
     createdAt,
     user
   } = currentPost || {};
+  const imageUrl = image || currentPost?.images?.[0]?.url || '/src/assets/images/default-post.png';
   const handleLike = async () => {
     if (isLiking) return;
     setIsLiking(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      const updatedPost = {
-        ...currentPost,
-        likes: (currentPost.likes || 0) + 1,
-        isLiked: true
-      };
-      setCurrentPost(updatedPost);
-      if (onPostUpdate) {
-        onPostUpdate(updatedPost);
-      }  
-      console.log('Liked post:', id);
+      const response = await likeProduct(id);
+      if (response.success) {
+        const updatedPost = {
+          ...currentPost,
+          likes: response.data.likes || (currentPost.likes || 0) + 1,
+          isLiked: true
+        };
+        setCurrentPost(updatedPost);
+        if (onPostUpdate) {
+          onPostUpdate(updatedPost);
+        }
+      }
     } catch (error) {
       console.error('Error liking post:', error);
+      alert('Failed to like post. Please try again.');
     } finally {
       setIsLiking(false);
     }
   };
-  const handleEdit = async () => {
-    try {
-      window.location.href = `/edit-post/${id}`;
-      console.log('Edit post:', id);
-    } catch (error) {
-      console.error('Error editing post:', error);
-    }
+  const handleView = () => {
+    navigate(`/product/${id}`);
   };
+
+  const handleEdit = () => {
+    window.location.href = `/edit-product/${id}`;
+  };
+
   const handleDelete = async () => {
     if (isDeleting) return;
-    if (!window.confirm('Are you sure you want to delete this post?')) {
+    if (!window.confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
       return;
     }
     setIsDeleting(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      if (onPostDelete) {
-        onPostDelete(id);
+      const response = await deleteProduct(id);
+      if (response.success) {
+        if (onPostDelete) {
+          onPostDelete(id);
+        }
+        alert('Product deleted successfully!');
       }
-      console.log('Deleted post:', id);
     } catch (error) {
-      console.error('Error deleting post:', error);
-      alert('Failed to delete post. Please try again.');
+      console.error('Error deleting product:', error);
+      alert(error.response?.data?.message || 'Failed to delete product. Please try again.');
     } finally {
       setIsDeleting(false);
     }
@@ -100,15 +112,25 @@ export default function PostItem({ post, isOwnProfile = false, onPostUpdate, onP
         borderColor: COLORS.neutral.gray 
       }}
     >
-      <div className="w-24 h-24 flex-shrink-0">
+      <div className="w-24 h-24 flex-shrink-0 relative">
         <img
-          src={image || '/src/assets/images/default-post.png'}
+          src={imageUrl}
           alt={title || 'Post image'}
           className="w-full h-full object-cover rounded-lg"
-          onError={(e) => {
-            e.target.src = '/src/assets/images/default-post.png';
-          }}
+          onError={(e) => { e.target.src = '/src/assets/images/default-post.png'; }}
         />
+        {/* Heart/Wishlist Button */}
+        <button
+          onClick={() => toggleFavorite(id)}
+          className="absolute top-1 right-1 w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:scale-110 transition-transform"
+          title={isFavorite(id) ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          <Heart
+            className={`w-4 h-4 ${
+              isFavorite(id) ? 'fill-red-500 text-red-500' : 'text-gray-400'
+            }`}
+          />
+        </button>
       </div>
       <div className="flex-1 min-w-0">
         <h3 
@@ -124,33 +146,7 @@ export default function PostItem({ post, isOwnProfile = false, onPostUpdate, onP
           {description || 'No description available'}
         </p>
         <div className="flex items-center gap-2 flex-wrap">
-          <button 
-            onClick={handleLike}
-            disabled={isLiking}
-            className="px-4 py-1 rounded text-sm transition-opacity flex items-center gap-1 hover:opacity-90"
-            style={{
-              backgroundColor: isLiking ? COLORS.primary.lime + '80' : COLORS.primary.lime,
-              color: COLORS.text.primary,
-              cursor: isLiking ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {isLiking ? (
-              <>
-                <span>Liking...</span>
-                <div 
-                  className="w-3 h-3 border-2 border-t-transparent rounded-full animate-spin"
-                  style={{ borderColor: COLORS.text.primary }}
-                ></div>
-              </>
-            ) : (
-              <>
-                <span>Like</span>
-                {likes > 0 && (
-                  <span className="text-xs">({likes})</span>
-                )}
-              </>
-            )}
-          </button>
+          
           {status && (
             <span 
               className="px-2 py-1 rounded text-xs"
@@ -187,6 +183,7 @@ export default function PostItem({ post, isOwnProfile = false, onPostUpdate, onP
               </>
             )}
             <button 
+              onClick={handleView}
               className="px-4 py-1 rounded text-sm transition-opacity hover:opacity-90"
               style={{
                 backgroundColor: COLORS.neutral.gray,

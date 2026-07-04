@@ -1,0 +1,33 @@
+i  added the api folder withe axios file
+i chnaged in the log in page and in the siggn up page 
+i changed in teh login header 
+ichanged the model user ( adding the role in the model user and in the protected filed in the model )
+i update dteh login page to redirect either to teh profile or to teh dashbored dependce on teh user role 
+i added admine controller and added the midele ware so i changed in the bootstrap/app.php
+i changed in the routes/api.php i added the middle wares 
+           (Creates middleware that checks if user is admin
+           ✅ Protects admin routes from non-admin users
+           ✅ Returns proper error messages (401 for not logged in, 403 for not admin)
+           ✅ Registers two admin endpoints:
+
+          GET /api/admin/users - Get all users with pagination/search
+          GET /api/admin/stats - Get dashboard statistics)
+
+
+
+
+ichanged in admin publications 
+i changed teh model of teh product and the product image and i addedd the category and teh location models 
+i changed in the provider folder in the backend and add the brodcast 
+
+i runned this commande composer require pusher/pusher-php-server ti install the pusher package 
+php artisan vendor:publish --provider="Illuminate\Broadcasting\BroadcastServiceProvider" run this commande to create the config/brodcast file
+
+
+now react configuration for teh real time system 
+1 ) npm install pusher-js laravel-echo axios
+
+
+
+
+

@@ -1,120 +1,171 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import {  useLocation } from 'react-router-dom';
+// import {  useLocation } from 'react-router-dom';
 import HeaderLoggedIn from '../components/HeaderLoggedIn';
 import Footer from '../components/Footer';
 import ProfileHero from '../components/ProfileHero';
 import COLORS from '../constants/colors';
+import api from '../api/axios';
 
 export default function Messages() {
+  // const navigate = useNavigate();
+  const location = useLocation();
+  
   const [selectedChat, setSelectedChat] = useState(null);
   const [messageInput, setMessageInput] = useState('');
-  const [messages, setMessages] = useState({});
+  const [conversations, setConversations] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [sendingMessage, setSendingMessage] = useState(false);
 
-  const user = {
-    name: 'ibtihal',
-    email: 'ibtihal@example.com',
-    profileImage: null,
-    followers: 328,
-    following: 94,
-    posts: 18
-  };
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-  const conversations = [
-    {
-      id: 1,
-      userName: 'Ibtihal',
-      avatar: 'I',
-      avatarColor: 'bg-[#FFEA00]',
-      lastMessage: 'disponible?',
-      unread: true
-    },
-    {
-      id: 2,
-      userName: 'Mehdi',
-      avatar: 'M',
-      avatarColor: 'bg-[#BBFF00]',
-      lastMessage: 'disponible?',
-      unread: false
-    },
-    {
-      id: 3,
-      userName: 'Hadil',
-      avatar: 'H',
-      avatarColor: 'bg-[#FF66CC]',
-      lastMessage: 'disponible?',
-      unread: false
-    },
-    {
-      id: 4,
-      userName: 'Ahmed',
-      avatar: 'A',
-      avatarColor: 'bg-[#FF7700]',
-      lastMessage: 'disponible?',
-      unread: false
-    },
-    {
-      id: 5,
-      userName: 'Lina',
-      avatar: 'L',
-      avatarColor: 'bg-[#BBFF00]',
-      lastMessage: 'disponible?',
-      unread: false
-    },
-    {
-      id: 6,
-      userName: 'Malak',
-      avatar: 'M',
-      avatarColor: 'bg-[#FFEA00]',
-      lastMessage: 'mazalet disponible ?',
-      unread: false
+  // Get chatId from URL
+  const params = new URLSearchParams(location.search);
+  const chatIdFromUrl = params.get("chatId");
+
+  // Fetch conversations on mount
+  useEffect(() => {
+    fetchConversations();
+  }, []);
+
+  // Auto-open chat if URL has chatId parameter
+  useEffect(() => {
+    if (!loading && chatIdFromUrl && conversations.length > 0) {
+      const chat = conversations.find(c => c.chat_id === chatIdFromUrl);
+      if (chat) {
+        setSelectedChat(chat);
+      }
     }
-  ];
+  }, [loading, chatIdFromUrl, conversations]);
 
-  const defaultMessages = {
-    1: [
-      { id: 1, sender: 'other', text: 'disponible?', timestamp: Date.now() }
-    ],
-    2: [
-      { id: 1, sender: 'other', text: 'disponible?', timestamp: Date.now() }
-    ],
-    3: [
-      { id: 1, sender: 'other', text: 'disponible?', timestamp: Date.now() }
-    ],
-    4: [
-      { id: 1, sender: 'other', text: 'disponible?', timestamp: Date.now() }
-    ],
-    5: [
-      { id: 1, sender: 'other', text: 'disponible?', timestamp: Date.now() }
-    ],
-    6: [
-      { id: 1, sender: 'other', text: 'mazalet disponible ?', timestamp: Date.now() },
-      { id: 2, sender: 'me', text: 'oui', timestamp: Date.now() },
-      { id: 3, sender: 'other', text: 'ch7al', timestamp: Date.now() },
-      { id: 4, sender: 'me', text: '...', timestamp: Date.now() }
-    ]
+  // Fetch messages when chat is selected
+  useEffect(() => {
+    if (selectedChat) {
+      fetchMessages(selectedChat.chat_id);
+    }
+  }, [selectedChat]);
+
+  const fetchConversations = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get('/chats');
+      
+      if (response.data.success) {
+        const formattedConversations = response.data.conversations.map(conv => ({
+          id: conv.chat_id,
+          chat_id: conv.chat_id,
+          userName: conv.other_user.name,
+          avatar: conv.other_user.name.charAt(0).toUpperCase(),
+          avatarColor: getRandomColor(),
+          lastMessage: conv.last_message || 'No messages yet',
+          unread: conv.unread_count > 0,
+          unreadCount: conv.unread_count,
+          otherUser: conv.other_user,
+          item: conv.item,
+          lastMessageAt: conv.last_message_at,
+        }));
+        
+        setConversations(formattedConversations);
+      }
+    } catch (error) {
+      console.error('Failed to fetch conversations:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const chatMessages = selectedChat ? (messages[selectedChat.id] || defaultMessages[selectedChat.id] || []) : [];
+  const fetchMessages = async (chatId) => {
+    try {
+      const response = await api.get(`/chats/${chatId}/messages`);
+      
+      if (response.data.success) {
+        const formattedMessages = response.data.messages.map(msg => ({
+          id: msg.message_id,
+          sender: msg.is_mine ? 'me' : 'other',
+          text: msg.body,
+          timestamp: new Date(msg.created_at).getTime(),
+          read: msg.read,
+          senderInfo: msg.sender,
+        }));
+        
+        setMessages(formattedMessages);
+        markAsRead(chatId);
+      }
+    } catch (error) {
+      console.error('Failed to fetch messages:', error);
+    }
+  };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!messageInput.trim() || !selectedChat) return;
 
-    const newMessage = {
-      id: Date.now(),
-      sender: 'me',
-      text: messageInput,
-      timestamp: Date.now()
-    };
-
-    setMessages(prev => ({
-      ...prev,
-      [selectedChat.id]: [...(prev[selectedChat.id] || defaultMessages[selectedChat.id] || []), newMessage]
-    }));
+    setSendingMessage(true);
     
-    setMessageInput('');
+    try {
+      const response = await api.post('/chats/messages', {
+        receiver_id: selectedChat.otherUser.user_id,
+        body: messageInput,
+        type: 'text',
+        item_id: selectedChat.item?.product_id || null,
+      });
+
+      if (response.data.success) {
+        const newMessage = {
+          id: response.data.data.message_id,
+          sender: 'me',
+          text: messageInput,
+          timestamp: Date.now(),
+          read: false,
+        };
+
+        setMessages(prev => [...prev, newMessage]);
+        setMessageInput('');
+        fetchConversations();
+      }
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      alert('Failed to send message. Please try again.');
+    } finally {
+      setSendingMessage(false);
+    }
+  };
+
+  const markAsRead = async (chatId) => {
+    try {
+      await api.patch(`/chats/${chatId}/read`);
+      fetchConversations();
+    } catch (error) {
+      console.error('Failed to mark as read:', error);
+    }
+  };
+
+  const getRandomColor = () => {
+    const colors = [
+      'bg-[#FFEA00]',
+      'bg-[#BBFF00]',
+      'bg-[#FF66CC]',
+      'bg-[#FF7700]',
+      'bg-[#00D4FF]',
+      'bg-[#FF5555]',
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+
+  const formatTime = (timestamp) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffInHours = (now - date) / (1000 * 60 * 60);
+
+    if (diffInHours < 24) {
+      return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    } else {
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !sendingMessage) {
       handleSendMessage();
     }
   };
@@ -151,36 +202,66 @@ export default function Messages() {
           </div>
         </div>
 
-        {!selectedChat ? (
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="text-gray-500">Loading conversations...</div>
+          </div>
+        ) : !selectedChat ? (
           <div className="space-y-3">
-            {conversations.map((conv) => (
-              <div
-                key={conv.id}
-                onClick={() => setSelectedChat(conv)}
-                className="rounded-lg p-4 flex items-center gap-4 hover:shadow-md transition-shadow cursor-pointer border"
-                style={{ 
-                  backgroundColor: COLORS.neutral.white,
-                  borderColor: COLORS.neutral.gray 
-                }}
-              >
-                <div 
-                  className={`${conv.avatarColor} w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0`}
-                  style={{ color: COLORS.text.primary }}
-                >
-                  {conv.avatar}
-                </div>
-                <div className="flex-grow min-w-0">
-                  <h3 className="font-semibold" style={{ color: COLORS.text.primary }}>{conv.userName}</h3>
-                  <p className="text-sm truncate" style={{ color: COLORS.text.secondary }}>{conv.lastMessage}</p>
-                </div>
-                {conv.unread && (
-                  <div 
-                    className="w-3 h-3 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: COLORS.primary.pink }}
-                  ></div>
-                )}
+            {conversations.length === 0 ? (
+              <div className="text-center py-12 text-gray-500">
+                <p>No conversations yet</p>
+                <p className="text-sm mt-2">Start chatting by messaging someone!</p>
               </div>
-            ))}
+            ) : (
+              conversations.map((conv) => (
+                <div
+                  key={conv.id}
+                  onClick={() => setSelectedChat(conv)}
+                  className="rounded-lg p-4 flex items-center gap-4 hover:shadow-md transition-shadow cursor-pointer border"
+                  style={{ 
+                    backgroundColor: COLORS.neutral.white,
+                    borderColor: COLORS.neutral.gray 
+                  }}
+                >
+                  <div 
+                    className={`${conv.avatarColor} w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0`}
+                    style={{ color: COLORS.text.primary }}
+                  >
+                    {conv.avatar}
+                  </div>
+                  <div className="flex-grow min-w-0">
+                    <h3 className="font-semibold" style={{ color: COLORS.text.primary }}>
+                      {conv.userName}
+                    </h3>
+                    <p className="text-sm truncate" style={{ color: COLORS.text.secondary }}>
+                      {conv.lastMessage}
+                    </p>
+                    {conv.item && (
+                      <p className="text-xs mt-1" style={{ color: COLORS.text.secondary }}>
+                        About: {conv.item.title}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex flex-col items-end gap-2">
+                    {conv.lastMessageAt && (
+                      <span className="text-xs" style={{ color: COLORS.text.secondary }}>
+                        {formatTime(new Date(conv.lastMessageAt))}
+                      </span>
+                    )}
+                    {conv.unread && (
+                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full" 
+                        style={{ 
+                          backgroundColor: COLORS.primary.pink,
+                          color: COLORS.neutral.white 
+                        }}>
+                        {conv.unreadCount}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         ) : (
           <div 
@@ -215,12 +296,21 @@ export default function Messages() {
                 {selectedChat.avatar}
               </div>
               
-              <h3 className="font-semibold" style={{ color: COLORS.text.primary }}>{selectedChat.userName}</h3>
+              <div>
+                <h3 className="font-semibold" style={{ color: COLORS.text.primary }}>
+                  {selectedChat.userName}
+                </h3>
+                {selectedChat.item && (
+                  <p className="text-xs" style={{ color: COLORS.text.secondary }}>
+                    About: {selectedChat.item.title}
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="p-6 overflow-y-auto" style={{ height: 'calc(100% - 140px)' }}>
               <div className="space-y-4">
-                {chatMessages.map((msg) => (
+                {messages.map((msg) => (
                   <div
                     key={msg.id}
                     className={`flex ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}
@@ -245,6 +335,9 @@ export default function Messages() {
                         <p className="font-semibold text-sm mb-1">{selectedChat.userName}</p>
                       )}
                       <p className="text-sm">{msg.text}</p>
+                      <p className="text-xs opacity-70 mt-1">
+                        {formatTime(msg.timestamp)}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -259,23 +352,31 @@ export default function Messages() {
                   onChange={(e) => setMessageInput(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="send a message"
+                  disabled={sendingMessage}
                   className="flex-grow px-4 py-3 border rounded-lg focus:outline-none focus:ring-2"
                   style={{
-                    borderColor: COLORS.neutral.gray,
-                    '--tw-ring-color': COLORS.primary.blue
+                    borderColor: COLORS.neutral.gray
                   }}
                 />
                 <button 
                   onClick={handleSendMessage}
-                  className="p-3 rounded-lg hover:opacity-90 transition-opacity"
+                  disabled={sendingMessage}
+                  className="p-3 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
                   style={{ 
                     backgroundColor: COLORS.primary.blue,
                     color: COLORS.neutral.white 
                   }}
                 >
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-                  </svg>
+                  {sendingMessage ? (
+                    <svg className="w-6 h-6 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  ) : (
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                    </svg>
+                  )}
                 </button>
               </div>
             </div>

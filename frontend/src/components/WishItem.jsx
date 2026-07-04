@@ -1,17 +1,31 @@
+import { useNavigate } from 'react-router-dom';
 import COLORS from '../constants/colors';
 
 export default function WishItem({ item, isFavorite, onToggleFavorite, onRemove }) {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/product/${item.id}`);
+  };
+
+  const imageUrl = item.image || item.images?.[0]?.url;
+
   return (
     <div 
-      className="rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+      className="rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
       style={{ backgroundColor: COLORS.neutral.gray }}
+      onClick={handleClick}
     >
       <div className="relative h-64">
-        <img 
-          src={item.image} 
-          alt={item.title}
-          className="w-full h-full object-cover"
-        />
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={item.title}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-100" />
+        )}
       </div>
       <div className="p-4">
         <h3 className="text-lg font-semibold mb-2" style={{ color: COLORS.text.primary }}>{item.title}</h3>
@@ -20,7 +34,10 @@ export default function WishItem({ item, isFavorite, onToggleFavorite, onRemove 
           
           <div className="flex items-center gap-3">
             <button
-              onClick={() => onToggleFavorite(item.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleFavorite(item.id);
+              }}
               className="transition-opacity hover:opacity-80"
               style={{ color: COLORS.primary.pink }}
               aria-label="Toggle favorite"
@@ -30,7 +47,10 @@ export default function WishItem({ item, isFavorite, onToggleFavorite, onRemove 
               </svg>
             </button>
             <button
-              onClick={() => onRemove(item.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemove(item.id);
+              }}
               className="transition-opacity hover:opacity-80"
               style={{ color: COLORS.text.secondary }}
               aria-label="Remove item"

@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { FullWidthButton, LinkButton } from '../components/Button';
 import welcomeImage from '../assets/images/welcome.png';
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import api from '../api/axios';
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -12,8 +14,7 @@ export default function LoginPage() {
     email: '',   
     password: '' 
   });
-  const DEMO_EMAIL = 'demo@raskala.com';
-  const DEMO_PASSWORD = 'demo123';
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -54,7 +55,10 @@ export default function LoginPage() {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validate form
     const emailError = validateEmail(email);
     const passwordError = validatePassword(password);
     
@@ -67,22 +71,77 @@ export default function LoginPage() {
       console.log('Form has errors');
       return;
     }
-    if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
-      console.log('Login successful!');
-      window.location.href = '/home-after-login';
-    } else {
-      setErrors({
-        email: 'Invalid email or password',
-        password: 'Invalid email or password'
-      });
-      console.log('Invalid credentials');
-    }
-  };
 
-  const handleDemoLogin = () => {
-    setEmail(DEMO_EMAIL);
-    setPassword(DEMO_PASSWORD);
-    setErrors({ email: '', password: '' });
+  
+    setIsLoading(true);
+
+    try {
+      // Call Laravel API
+      const response = await api.post('/login', {
+        email: email,
+        password: password
+      });
+
+      console.log('Login successful:', response.data);
+
+      // Store token in localStorage
+      localStorage.setItem('token', response.data.token);
+      
+      // Store user info in localStorage
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+
+      // Store "remember me" preference
+      if (rememberMe) {
+        localStorage.setItem('rememberMe', 'true');
+      }
+
+      // Store "keep logged in" preference
+      if (keepLoggedIn) {
+        localStorage.setItem('keepLoggedIn', 'true');
+      }
+      
+       const userRole = response.data.user.role;
+    
+    if (userRole === 'admin') {
+      // Redirect admin to dashboard
+      navigate('/admin-users');
+    } else {
+      // Redirect regular user to home
+      navigate('/home-after-login');
+    }
+
+    } catch (error) {
+      console.error('FULL LOGIN ERROR:', {
+    message: error.message,
+    code: error.code,
+    response: error.response,
+     request: error.request
+  });
+      console.error('Login failed:', error);
+      setIsLoading(false);
+
+      if (error.response?.data?.errors) {
+        // Backend validation errors
+        const backendErrors = error.response.data.errors;
+        setErrors({
+          email: backendErrors.email?.[0] || '',
+          password: backendErrors.password?.[0] || ''
+        });
+      } else if (error.response?.data?.message) {
+        // General error message
+        const errorMsg = error.response.data.message;
+        setErrors({
+          email: errorMsg,
+          password: errorMsg
+        });
+      } else {
+        // Network or other errors
+        setErrors({
+          email: 'Unable to connect to server',
+          password: 'Please try again later'
+        });
+      }
+    }
   };
 
   const handleGoogleLogin = () => {
@@ -110,21 +169,6 @@ export default function LoginPage() {
               Enter your Credentials to access your account
             </p>
           </div>
-          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-sm text-gray-700 mb-2">
-              <strong>Demo Account:</strong>
-            </p>
-            <p className="text-xs text-gray-600 mb-3">
-              Email: <code className="bg-white px-2 py-1 rounded">demo@raskala.com</code><br />
-              Password: <code className="bg-white px-2 py-1 rounded">demo123</code>
-            </p>
-            <button
-              onClick={handleDemoLogin}
-              className="text-sm text-lime-600 hover:text-lime-700 font-semibold underline"
-            >
-              Click here to auto-fill demo credentials
-            </button>
-          </div>
 
           <div className="space-y-6">
             <div>
@@ -142,6 +186,7 @@ export default function LoginPage() {
                     : 'border-gray-300 focus:ring-lime-400'
                 }`}
                 placeholder="Enter your email"
+                disabled={isLoading}
               />
               {errors.email && (
                 <p className="mt-1 text-sm text-red-600">{errors.email}</p>
@@ -168,6 +213,7 @@ export default function LoginPage() {
                     : 'border-gray-300 focus:ring-lime-400'
                 }`}
                 placeholder="Enter your password"
+                disabled={isLoading}
               />
               {errors.password && (
                 <p className="mt-1 text-sm text-red-600">{errors.password}</p>
@@ -181,6 +227,7 @@ export default function LoginPage() {
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
                   className="w-4 h-4 text-lime-600 border-gray-300 rounded focus:ring-lime-500"
+                  disabled={isLoading}
                 />
                 <span className="ml-2 text-gray-700 font-semibold">Remember me</span>
               </label>
@@ -191,21 +238,26 @@ export default function LoginPage() {
                   checked={keepLoggedIn}
                   onChange={(e) => setKeepLoggedIn(e.target.checked)}
                   className="w-4 h-4 text-lime-600 border-gray-300 rounded focus:ring-lime-500"
+                  disabled={isLoading}
                 />
                 <span className="ml-2 text-gray-700 font-semibold">Keep me login</span>
               </label>
             </div>
-              <Link to='/home-after-login'>
+
             <div className="pt-3">
-              <FullWidthButton onClick={handleSubmit}>
-                Log in
+              <FullWidthButton 
+                onClick={handleSubmit}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Logging in...' : 'Log in'}
               </FullWidthButton>
-            </div></Link>
+            </div>
 
             <div className="flex gap-4 pt-4">
               <button
                 onClick={handleGoogleLogin}
                 className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                disabled={isLoading}
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -219,6 +271,7 @@ export default function LoginPage() {
               <button
                 onClick={handleAppleLogin}
                 className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                disabled={isLoading}
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>

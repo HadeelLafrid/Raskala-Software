@@ -6,22 +6,27 @@ import Sponsored from '../components/Sponsor';
 import PopularItems from '../components/PopularItems';
 import AddItem from './AddItem';
 import { Link } from 'react-router-dom';
+import { useUser } from '../contexts/UserContext';
 
 export default function HomeAfterLogIn() {
-  // Simulate user data - in real app, this comes from authentication/API
-  const user = {
-    name: 'Mehdi',
-    email: 'Mehdi@example.com',
-    profileImage: 'https://example.com/user-profile.jpg' // This would come from your database
-    // If profileImage is null/undefined or fails to load, it will use the default
-  };
+  const { user, loading } = useUser();
 
-  // To test with no image (will use default):
-  // const user = { name: 'Mehdi', email: 'Mehdi@example.com' };
+  if (loading) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <div className="flex-grow flex items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-4 border-pink-500"></div>
+            <p className="mt-4 text-gray-600 text-lg">Loading ...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
-      <HeaderLoggedIn user={user} />
+      <HeaderLoggedIn />
       <Categories />
       <Publicity />
       <Sponsored />

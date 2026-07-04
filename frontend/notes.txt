@@ -1,0 +1,5 @@
+you should not run the commande migration:fresh it will drop all the tables 
+if you want to creat a seeder you should run the command php artisan make:seeder class=NameSeeder and the name of teh file should match the name of the class
+to run all the seeders you should run the command php artisan db:seed and here you need the databseseeder.php and i delete it so you do not mess with the code 
+to run the migration you should run the command php artisan migrate
+to run the migration and the seeder you should run the command php artisan migrate --seed

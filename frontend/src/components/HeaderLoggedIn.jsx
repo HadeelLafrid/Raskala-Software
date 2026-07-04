@@ -2,15 +2,38 @@ import SearchBar from './SearchBar';
 import logo from '../assets/images/raskala_logo.png';
 import defaultProfile from '../assets/images/profile.png';
 import { useState } from 'react';
-import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import api from "../api/axios";
+import { Link } from 'react-router-dom';
+import { useUser } from '../contexts/UserContext';
 
-export default function HeaderLoggedIn({ user }) {
+
+
+export default function HeaderLoggedIn({ user: propUser }) {
+  const { user: contextUser, imageKey } = useUser();
+  const user = propUser || contextUser;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  // Determine which profile image to use, when we link it with db it will fetch picture from it, if it doesnt exists it will just use the default one
-  const profileImage = (user?.profileImage && !imageError) ? user.profileImage : defaultProfile;
+  // Determine which profile image to use. Append imageKey to bust cache when image changes.
+  let profileImage = defaultProfile;
+  if (user?.profileImage && !imageError) {
+    const base = user.profileImage;
+    const sep = base.includes('?') ? '&' : '?';
+    profileImage = `${base}${sep}v=${imageKey || ''}`;
+  }
+const navigate = useNavigate();
+
+const handleLogout = async () => {
+  try {
+    await api.post('/logout');   // call backend logout
+    localStorage.removeItem('token'); // remove token from localStorage
+    navigate('/LoginPage');           // redirect to login page
+  } catch (error) {
+    console.error('Logout failed', error);
+  }
+};
 
   return (
     <header id="home" className="bg-white shadow-md">
@@ -76,20 +99,35 @@ export default function HeaderLoggedIn({ user }) {
                 </li>
 
                 {/* Log Out link */}
-                <li>
-                  <a href="/" className="text-orange-500 hover:text-orange-600 font-medium flex items-center gap-1">
-                    Log Out
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </a>
-                </li>
+                <li className="border-t pt-3 mt-2">
+  <button
+    onClick={() => { setIsMenuOpen(false); handleLogout(); }} // closes menu + logs out
+    className="text-orange-500 hover:text-orange-600 font-medium flex items-center justify-between py-2"
+  >
+    Log Out
+    <svg
+      className="w-4 h-4"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M17 16l4-4m0 0l-4-4m4 4H7"
+      />
+    </svg>
+  </button>
+</li>
+
+
               </ul>
             </nav>
 
             {/* Profile picture - always visible, same size */}
             <div className="relative">
-              {/* <Link to = '/Profile'>               */}
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="flex items-center gap-2 focus:outline-none"
@@ -101,17 +139,24 @@ export default function HeaderLoggedIn({ user }) {
                   className="w-12 h-12 rounded-full border-2 border-pink-400 object-cover hover:border-pink-500 transition-colors"
                 />
               </button>
-              {/* </Link> */}
+
               {/* Profile dropdown menu - only on desktop */}
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                  <Link  
-                  to="/edit-profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={() => setIsDropdownOpen(false)}>
+                  <Link
+                    to="/profile"
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
                     My Profile
                   </Link>
-                  <a href="/Profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={() => setIsDropdownOpen(false)}>
+                  <Link
+                    to="/edit-profile"
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
                     Settings
-                  </a>
+                  </Link>
                   {/* <a href="#my-items" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={() => setIsDropdownOpen(false)}>
                     My Items
                   </a> */}
@@ -209,13 +254,28 @@ export default function HeaderLoggedIn({ user }) {
               </li>
               
               <li className="border-t pt-3 mt-2">
-                <a href="/home-after-login" className="text-orange-500 hover:text-orange-600 font-medium flex items-center justify-between py-2" onClick={() => setIsMenuOpen(false)}>
-                  Log Out
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </a>
-              </li>
+  <button
+    onClick={() => { setIsMenuOpen(false); handleLogout(); }} // closes menu + logs out
+    className="text-orange-500 hover:text-orange-600 font-medium flex items-center justify-between py-2"
+  >
+    Log Out
+    <svg
+      className="w-4 h-4"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M17 16l4-4m0 0l-4-4m4 4H7"
+      />
+    </svg>
+  </button>
+</li>
+
             </ul>
           </nav>
         )}

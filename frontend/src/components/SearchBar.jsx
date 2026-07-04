@@ -1,53 +1,74 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { getCategories } from '../services/api';
+import { useSearch } from '../contexts/SearchContext';
 
 export default function SearchBar() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { updateSearch } = useSearch();
   const [category, setCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getCategories();
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const handleSearchInput = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    updateSearch(query, category);
+  };
+
+  const handleCategoryChange = (e) => {
+    const selectedCategory = e.target.value;
+    setCategory(selectedCategory);
+    updateSearch(searchQuery, selectedCategory);
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log('Searching for:', searchQuery, 'in category:', category);
-    // Add your search logic here
+    updateSearch(searchQuery, category);
   };
 
   return (
-    <form onSubmit={handleSearch} className="flex items-center gap-2 max-w-2xl">
-      <div className="relative">
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="px-4 py-2 pr-8 border border-gray-300 rounded-lg bg-white text-gray-700 appearance-none cursor-pointer"
-        >
-          <option value="all">All Categories</option>
-          <option value="electronics">Electronics</option>
-          <option value="furniture">Furniture</option>
-          <option value="clothing">Clothing</option>
-          <option value="books">Books</option>
-        </select>
-        <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
-          <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
-      </div>
-
-      <div className="relative flex-grow">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search for items"
-          className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          type="submit"
-          className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </button>
-      </div>
+    <form onSubmit={handleSearch} className="relative flex items-center gap-2">
+      <select
+        value={category}
+        onChange={handleCategoryChange}
+        className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+      >
+        <option value="all">All Categories</option>
+        {categories.map((cat) => (
+          <option key={cat.category_id || cat.id} value={cat.category_id || cat.id}>
+            {cat.category_name || cat.name}
+          </option>
+        ))}
+      </select>
+      
+      <input
+        type="text"
+        value={searchQuery}
+        onChange={handleSearchInput}
+        placeholder="Search items..."
+        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+      />
+      
+      <button
+        type="submit"
+        className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition"
+      >
+        Search
+      </button>
     </form>
   );
 }
