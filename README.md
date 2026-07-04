@@ -3,7 +3,6 @@
 
 <p align="center">
   <img src="docs/screenshots/home.png" alt="Home Page" width="48%">
-  <img src="docs/screenshots/product-page.png" alt="Product Page" width="48%">
 </p>
 
 <h3 align="center">
@@ -132,17 +131,6 @@ PostgreSQL Database
 |------|-----------------|
 | ![](docs/screenshots/home.png) | ![](docs/screenshots/product-page.png) |
 
-| Seller Dashboard | Admin Dashboard |
-|------------------|-----------------|
-| ![](docs/screenshots/dashboard.png) | ![](docs/screenshots/admin-dashboard.png) |
-
-| Product Submission | Product Moderation |
-|--------------------|--------------------|
-| ![](docs/screenshots/submit-product.png) | ![](docs/screenshots/moderation.png) |
-
-| Messages | User Profile |
-|-----------|--------------|
-| ![](docs/screenshots/messages.png) | ![](docs/screenshots/profile.png) |
 
 ---
 
